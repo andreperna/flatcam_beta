@@ -2301,7 +2301,8 @@ class GeometryObject(FlatCAMObj, Geometry):
                     'tooldia': tooldia_val
                 })
                 if "optimization_type" not in tools_dict[tooluid_key]['data']:
-                    tools_dict[tooluid_key]['data']["optimization_type"] = self.app.defaults["geometry_optimization_type"]
+                    tools_dict[tooluid_key]['data']["optimization_type"] = \
+                        self.app.defaults["geometry_optimization_type"]
 
                 # find the tool_dia associated with the tooluid_key
                 # search in the self.tools for the sel_tool_dia and when found see what tooluid has
@@ -2883,7 +2884,7 @@ class GeometryObject(FlatCAMObj, Geometry):
         param_list = ['cutz', 'depthperpass', 'travelz', 'feedrate', 'feedrate_z', 'feedrate_rapid',
                       'endz', 'toolchangez']
 
-        if isinstance(self, GeometryObject):
+        if self.kind == 'geometry':
             temp_tools_dict = {}
             tool_dia_copy = {}
             data_copy = {}

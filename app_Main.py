@@ -789,7 +789,7 @@ class App(QtCore.QObject):
                                   'interiors', 'isolate', 'join_excellon',
                                   'join_geometry', 'list_sys', 'milld', 'mills', 'milldrills', 'millslots',
                                   'mirror', 'ncc',
-                                  'ncr', 'new', 'new_geometry', 'non_copper_regions', 'offset',
+                                  'ncr', 'new', 'new_geometry', 'non_copper_regions', 'offset', 'open_folder',
                                   'open_dxf', 'open_excellon', 'open_gcode', 'open_gerber', 'open_project', 'open_svg',
                                   'options', 'origin',
                                   'paint', 'panelize', 'plot_all', 'plot_objects', 'plot_status', 'quit_flatcam',
@@ -2362,14 +2362,11 @@ class App(QtCore.QObject):
 
         edited_object = self.collection.get_active()
 
-        if isinstance(edited_object, GerberObject) or isinstance(edited_object, GeometryObject) or \
-                isinstance(edited_object, ExcellonObject) or isinstance(edited_object, CNCJobObject):
-            pass
-        else:
+        if edited_object.kind not in ['gerber', 'geometry', 'excellon', 'cncjob']:
             self.inform.emit('[WARNING_NOTCL] %s' % _("Select a Geometry, Gerber, Excellon or CNCJob Object to edit."))
             return
 
-        if isinstance(edited_object, GeometryObject):
+        if edited_object.kind == 'geometry':
             # store the Geometry Editor Toolbar visibility before entering in the Editor
             self.geo_editor.toolbar_old_state = True if self.ui.geo_edit_toolbar.isVisible() else False
 
@@ -2406,7 +2403,7 @@ class App(QtCore.QObject):
 
             # set call source to the Editor we go into
             self.call_source = 'geo_editor'
-        elif isinstance(edited_object, ExcellonObject):
+        elif edited_object.kind == 'excellon':
             # store the Excellon Editor Toolbar visibility before entering in the Editor
             self.exc_editor.toolbar_old_state = True if self.ui.exc_edit_toolbar.isVisible() else False
 
@@ -2417,7 +2414,7 @@ class App(QtCore.QObject):
 
             # set call source to the Editor we go into
             self.call_source = 'exc_editor'
-        elif isinstance(edited_object, GerberObject):
+        elif edited_object.kind == 'gerber':
             # store the Gerber Editor Toolbar visibility before entering in the Editor
             self.grb_editor.toolbar_old_state = True if self.ui.grb_edit_toolbar.isVisible() else False
 
@@ -2431,7 +2428,7 @@ class App(QtCore.QObject):
 
             # reset the following variables so the UI is built again after edit
             edited_object.ui_build = False
-        elif isinstance(edited_object, CNCJobObject):
+        elif edited_object.kind == 'cncjob':
 
             if self.ui.splitter.sizes()[0] == 0:
                 self.ui.splitter.setSizes([1, 1])
@@ -2660,15 +2657,17 @@ class App(QtCore.QObject):
                 if self.old_state_of_tools_toolbar is True:
                     tools_tb.show()
 
-                if isinstance(edited_obj, GeometryObject):
+                if edited_obj.kind == 'geometry':
                     self.geo_editor.deactivate()
-                elif isinstance(edited_obj, GerberObject):
+                elif edited_obj.kind == 'gerber':
                     self.grb_editor.deactivate_grb_editor()
-                elif isinstance(edited_obj, ExcellonObject):
+                elif edited_obj.kind == 'excellon':
                     self.exc_editor.deactivate()
+                elif edited_obj.kind == 'cncjob':
+                    self.gcode_editor.deactivate()
                 else:
-                    self.inform.emit('[WARNING_NOTCL] %s' %
-                                     _("Select a Gerber, Geometry or Excellon Object to update."))
+                    msg = '[WARNING_NOTCL] %s' % _("Select a Gerber, Geometry or Excellon Object to update.")
+                    self.inform.emit(msg)
                     return
 
             # if notebook is hidden we show it
@@ -4109,7 +4108,7 @@ class App(QtCore.QObject):
         objs = self.collection.get_selected()
 
         for obj in objs:
-            if not isinstance(obj, ExcellonObject):
+            if obj.kind != 'excellon':
                 self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Excellon joining works only on Excellon objects."))
                 return
 
@@ -4139,7 +4138,7 @@ class App(QtCore.QObject):
         objs = self.collection.get_selected()
 
         for obj in objs:
-            if not isinstance(obj, GerberObject):
+            if obj.kind != 'gerber':
                 self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Gerber joining works only on Gerber objects."))
                 return
 
@@ -4173,7 +4172,7 @@ class App(QtCore.QObject):
             self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Select a Geometry Object and try again."))
             return
 
-        if not isinstance(obj, GeometryObject):
+        if obj.kind != 'geometry':
             self.inform.emit('[ERROR_NOTCL] %s: %s' % (_("Expected a GeometryObject, got"), type(obj)))
             return
 
@@ -4206,13 +4205,11 @@ class App(QtCore.QObject):
         obj = self.collection.get_active()
 
         if obj is None:
-            self.inform.emit('[ERROR_NOTCL] %s' %
-                             _("Failed. Select a Geometry Object and try again."))
+            self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Select a Geometry Object and try again."))
             return
 
-        if not isinstance(obj, GeometryObject):
-            self.inform.emit('[ERROR_NOTCL] %s: %s' %
-                             (_("Expected a GeometryObject, got"), type(obj)))
+        if obj.kind != 'geometry':
+            self.inform.emit('[ERROR_NOTCL] %s: %s' % (_("Expected a GeometryObject, got"), type(obj)))
             return
 
         obj.multigeo = False
@@ -4505,7 +4502,7 @@ class App(QtCore.QObject):
             current = self.collection.get_active()
             if current is not None:
                 # the transfer of converted values to the UI form for Geometry is done local in the FlatCAMObj.py
-                if not isinstance(current, GeometryObject):
+                if current.kind != 'geometry':
                     current.to_form()
 
             # replot all objects
@@ -5311,15 +5308,15 @@ class App(QtCore.QObject):
             obj_name = obj.options["name"]
 
             try:
-                if isinstance(obj, ExcellonObject):
+                if obj.kind == 'excellon':
                     self.app_obj.new_object("excellon", str(obj_name) + "_copy", initialize_excellon)
-                elif isinstance(obj, GerberObject):
+                elif obj.kind == 'gerber':
                     self.app_obj.new_object("gerber", str(obj_name) + "_copy", initialize)
-                elif isinstance(obj, GeometryObject):
+                elif obj.kind == 'geometry':
                     self.app_obj.new_object("geometry", str(obj_name) + "_copy", initialize)
-                elif isinstance(obj, ScriptObject):
+                elif obj.kind == 'script':
                     self.app_obj.new_object("script", str(obj_name) + "_copy", initialize_script)
-                elif isinstance(obj, DocumentObject):
+                elif obj.kind == 'document':
                     self.app_obj.new_object("document", str(obj_name) + "_copy", initialize_document)
             except Exception as e:
                 return "Operation failed: %s" % str(e)
@@ -5366,11 +5363,11 @@ class App(QtCore.QObject):
         for obj in self.collection.get_selected():
             obj_name = obj.options["name"]
             try:
-                if isinstance(obj, ExcellonObject):
+                if obj.kind == 'excellon':
                     self.app_obj.new_object("excellon", str(obj_name) + custom_name, initialize_excellon)
-                elif isinstance(obj, GerberObject):
+                elif obj.kind == 'gerber':
                     self.app_obj.new_object("gerber", str(obj_name) + custom_name, initialize_gerber)
-                elif isinstance(obj, GeometryObject):
+                elif obj.kind == 'geometry':
                     self.app_obj.new_object("geometry", str(obj_name) + custom_name, initialize_geometry)
             except Exception as er:
                 return "Operation failed: %s" % str(er)
@@ -8524,10 +8521,7 @@ class MenuFileHandlers(QtCore.QObject):
             return
 
         # Check for more compatible types and add as required
-        if (not isinstance(obj, GeometryObject)
-                and not isinstance(obj, GerberObject)
-                and not isinstance(obj, CNCJobObject)
-                and not isinstance(obj, ExcellonObject)):
+        if obj.kind not in ['gerber', 'geometry', 'excellon', 'cncjob']:
             msg = '[ERROR_NOTCL] %s' % _("Only Geometry, Gerber and CNCJob objects can be used.")
             msgbox = QtWidgets.QMessageBox()
             msgbox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -8618,7 +8612,7 @@ class MenuFileHandlers(QtCore.QObject):
             return
 
         # Check for more compatible types and add as required
-        if not isinstance(obj, GerberObject):
+        if obj.kind != 'gerber':
             self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Only Gerber objects can be saved as Gerber files..."))
             return
 
@@ -8744,7 +8738,7 @@ class MenuFileHandlers(QtCore.QObject):
             return
 
         # Check for more compatible types and add as required
-        if not isinstance(obj, ExcellonObject):
+        if obj.kind != 'excellon':
             self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Only Excellon objects can be saved as Excellon files..."))
             return
 
@@ -8785,7 +8779,7 @@ class MenuFileHandlers(QtCore.QObject):
             return
 
         # Check for more compatible types and add as required
-        if not isinstance(obj, ExcellonObject):
+        if obj.kind != 'excellon':
             self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Only Excellon objects can be saved as Excellon files..."))
             return
 
@@ -9041,7 +9035,7 @@ class MenuFileHandlers(QtCore.QObject):
 
         for obj in self.app.collection.get_list():
             # delete shapes left drawn from mark shape_collections, if any
-            if isinstance(obj, GerberObject):
+            if obj.kind == 'gerber':
                 try:
                     obj.mark_shapes_storage.clear()
                     obj.mark_shapes.clear(update=True)
@@ -9710,9 +9704,8 @@ class MenuFileHandlers(QtCore.QObject):
         else:
             obj = local_use
 
-        if not isinstance(obj, ExcellonObject):
-            self.inform.emit('[ERROR_NOTCL] %s' %
-                             _("Failed. Only Excellon objects can be saved as Excellon files..."))
+        if obj.kind != 'excellon':
+            self.inform.emit('[ERROR_NOTCL] %s' % _("Failed. Only Excellon objects can be saved as Excellon files..."))
             return
 
         # updated units

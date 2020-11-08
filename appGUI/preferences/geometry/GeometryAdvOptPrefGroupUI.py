@@ -346,4 +346,16 @@ class GeometryAdvOptPrefGroupUI(OptionsGroupUI):
         grid1.addWidget(self.polish_method_lbl, 34, 0)
         grid1.addWidget(self.polish_method_combo, 34, 1)
 
+        separator_line = QtWidgets.QFrame()
+        separator_line.setFrameShape(QtWidgets.QFrame.HLine)
+        separator_line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        grid1.addWidget(separator_line, 36, 0, 1, 2)
+
+        # Initial Toolchange Event
+        self.init_tc_cb = FCCheckBox('%s' % _('Force ToolChange'))
+        self.init_tc_cb.setToolTip(
+            _("Always add a toolchange event at the beginning of GCode.")
+        )
+        grid1.addWidget(self.init_tc_cb, 38, 0, 1, 2)
+
         self.layout.addStretch()

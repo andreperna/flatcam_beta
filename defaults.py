@@ -349,6 +349,7 @@ class FlatCAMDefaults:
         "geometry_polish_margin": 0.0,
         "geometry_polish_overlap": 5,
         "geometry_polish_method": 0,
+        "geometry_force_toolchange": True,
 
         # Geometry Editor
         "geometry_editor_sel_limit": 30,
@@ -442,6 +443,7 @@ class FlatCAMDefaults:
         "tools_drill_dwell": False,
         "tools_drill_dwelltime": 1,
         "tools_drill_toolchange": False,
+        "tools_drill_force_toolchange": True,
         "tools_drill_toolchangez": 15,
         "tools_drill_ppname_e": 'default',
 

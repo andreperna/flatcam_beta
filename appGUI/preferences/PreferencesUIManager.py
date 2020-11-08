@@ -293,6 +293,8 @@ class PreferencesUIManager:
             "geometry_polish_overlap":  self.ui.geometry_defaults_form.geometry_adv_opt_group.polish_over_entry,
             "geometry_polish_method":   self.ui.geometry_defaults_form.geometry_adv_opt_group.polish_method_combo,
 
+            "geometry_force_toolchange": self.ui.geometry_defaults_form.geometry_adv_opt_group.init_tc_cb,
+
             # Geometry Editor
             "geometry_editor_sel_limit":        self.ui.geometry_defaults_form.geometry_editor_group.sel_limit_entry,
             "geometry_editor_milling_type":     self.ui.geometry_defaults_form.geometry_editor_group.milling_type_radio,
@@ -374,6 +376,8 @@ class PreferencesUIManager:
             "tools_drill_dwell":        self.ui.tools_defaults_form.tools_drill_group.dwell_cb,
             "tools_drill_dwelltime":    self.ui.tools_defaults_form.tools_drill_group.dwelltime_entry,
             "tools_drill_toolchange":   self.ui.tools_defaults_form.tools_drill_group.toolchange_cb,
+            "tools_drill_force_toolchange": self.ui.tools_defaults_form.tools_drill_group.init_tc_cb,
+
             "tools_drill_toolchangez":  self.ui.tools_defaults_form.tools_drill_group.toolchangez_entry,
             "tools_drill_ppname_e":     self.ui.tools_defaults_form.tools_drill_group.pp_excellon_name_cb,
 

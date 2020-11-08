@@ -55,9 +55,8 @@ class TclCommandSplitGeometry(TclCommand):
             return "Object not found: %s" % args['source_name']
 
         for uid in list(obj.tools.keys()):
-            def initialize(new_obj, app):
+            def initialize(new_obj, app_obj):
                 new_obj.multigeo = True
                 new_obj.tools[uid] = deepcopy(obj.tools[uid])
             name = "{0}_tool_{1}".format(args['source_name'], uid)
-            self.app.app_obj.new_object(
-                "geometry", name, initialize, plot=False)
+            self.app.app_obj.new_object("geometry", name, initialize, plot=False)

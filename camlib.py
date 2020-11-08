@@ -3299,10 +3299,14 @@ class CNCjob(Geometry):
             start_gcode = self.doformat(p.start_code)
             # t_gcode += start_gcode
 
-        # do the ToolChange event
-        t_gcode += self.doformat(p.z_feedrate_code)
-        t_gcode += self.doformat(p.toolchange_code, toolchangexy=(temp_locx, temp_locy))
-        t_gcode += self.doformat(p.z_feedrate_code)
+        # ##############################################################################################################
+        # ################################ do the ToolChange event #####################################################
+        # ##############################################################################################################
+        if self.app.defaults["tools_drill_force_toolchange"] is True or \
+                self.app.defaults["tools_drill_toolchange"] is True:
+            t_gcode += self.doformat(p.z_feedrate_code)
+            t_gcode += self.doformat(p.toolchange_code, toolchangexy=(temp_locx, temp_locy))
+            t_gcode += self.doformat(p.z_feedrate_code)
 
         # Spindle start
         t_gcode += self.doformat(p.spindle_code)
@@ -3726,8 +3730,11 @@ class CNCjob(Geometry):
             start_gcode = self.doformat(p.start_code)
             # t_gcode += start_gcode
 
-        # Toolchange code
+        # ##############################################################################################################
+        # ################################ do the ToolChange event #####################################################
+        # ##############################################################################################################
         t_gcode += self.doformat(p.feedrate_code)  # sets the feed rate
+        print((self.app.defaults["geometry_force_toolchange"]))
         if toolchange:
             t_gcode += self.doformat(p.toolchange_code)
 
