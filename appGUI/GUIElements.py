@@ -842,6 +842,75 @@ class NumericalEvalTupleEntry(EvalEntry):
         return evaled
 
 
+class FCCoordsDisplay(QtWidgets.QFrame):
+
+    def __init__(self, x, y, dx, dy, **kwargs):
+        super(FCCoordsDisplay, self).__init__(**kwargs)
+
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
+
+        self.layout = QtWidgets.QHBoxLayout()
+        self.layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+
+        self.pos_dx_lbl = FCLabel("<b>Dx</b>: %s&nbsp;" % '0.0')
+        self.pos_dx_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.pos_dy_lbl = FCLabel("<b>Dy</b>: %s&nbsp;" % '0.0')
+        self.pos_dy_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.layout.addWidget(self.pos_dx_lbl)
+        self.layout.addWidget(self.pos_dy_lbl)
+
+        separator_line = QtWidgets.QFrame()
+        separator_line.setFrameShape(QtWidgets.QFrame.Shape.VLine)
+        separator_line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        self.layout.addWidget(separator_line)
+
+        self.pos_x_lbl = FCLabel("&nbsp;<b>X</b>: %s" % '0.0')
+        self.pos_x_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.pos_y_lbl = FCLabel("&nbsp;<b>Y</b>: %s" % '0.0')
+        self.pos_y_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.layout.addWidget(self.pos_x_lbl)
+        self.layout.addWidget(self.pos_y_lbl)
+
+        self.setLayout(self.layout)
+
+    def update_location_labels(self, dx, dy, x, y):
+        """
+        Update the text of the location labels from InfoBar
+
+        :param x:   X location
+        :type x:    float
+        :param y:   Y location
+        :type y:    float
+        :param dx:  Delta X location
+        :type dx:   float
+        :param dy:  Delta Y location
+        :type dy:   float
+        :return:
+        :rtype:     None
+        """
+
+        # Set the position label
+        if x is None or y is None:
+            self.position_label.setText("")
+        else:
+            x_dec = str(self.app.dec_format(x, self.app.decimals)) if x else '0.0'
+            y_dec = str(self.app.dec_format(y, self.app.decimals)) if y else '0.0'
+            self.position_label.setText("&nbsp;<b>X</b>: %s&nbsp;&nbsp;   <b>Y</b>: %s&nbsp;" % (x_dec, y_dec))
+
+        # Set the Delta position label
+        if dx is None or dy is None:
+            self.rel_position_label.setText("")
+        else:
+            dx_dec = str(self.app.dec_format(dx, self.app.decimals)) if dx else '0.0'
+            dy_dec = str(self.app.dec_format(dy, self.app.decimals)) if dy else '0.0'
+
+            self.rel_position_label.setText("<b>Dx</b>: %s&nbsp;&nbsp;  <b>Dy</b>: %s&nbsp;" % (dx_dec, dy_dec))
+
+
 class FCColorEntry(QtWidgets.QFrame):
 
     def __init__(self, **kwargs):

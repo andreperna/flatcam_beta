@@ -1369,9 +1369,9 @@ class MainGUI(QtWidgets.QMainWindow):
         # #######################################################################
         # ####################### Delta Coordinates TOOLBAR #####################
         # #######################################################################
-        self.rel_position_label = FCLabel(
-            "<b>Dx</b>: 0.0&nbsp;&nbsp;   <b>Dy</b>: 0.0&nbsp;&nbsp;&nbsp;&nbsp;")
-        self.rel_position_label.setMinimumWidth(110)
+        self.rel_position_label = FCLabel("<b>Dx</b>: 0.0&nbsp;&nbsp;   <b>Dy</b>: 0.0&nbsp;")
+        # self.rel_position_label.setMinimumWidth(110)
+        self.rel_position_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.rel_position_label.setToolTip(_("Relative measurement.\nReference is last click position"))
         self.delta_coords_toolbar.addWidget(self.rel_position_label)
 
@@ -1379,9 +1379,9 @@ class MainGUI(QtWidgets.QMainWindow):
         # ####################### Coordinates TOOLBAR ###########################
         # #######################################################################
         self.position_label = FCLabel("&nbsp;<b>X</b>: 0.0&nbsp;&nbsp;   <b>Y</b>: 0.0&nbsp;")
-        self.position_label.setMinimumWidth(110)
-        self.position_label.setToolTip(_("Absolute measurement.\n"
-                                         "Reference is (X=0, Y= 0) position"))
+        # self.position_label.setMinimumWidth(110)
+        self.position_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.position_label.setToolTip(_("Absolute measurement.\nReference is (X=0, Y= 0) position"))
         self.coords_toolbar.addWidget(self.position_label)
 
         # #######################################################################
@@ -1811,6 +1811,11 @@ class MainGUI(QtWidgets.QMainWindow):
         self.infobar.addWidget(self.delta_coords_toolbar)
         self.delta_coords_toolbar.setVisible(self.app.defaults["global_delta_coordsbar_show"])
 
+        # separator_line = QtWidgets.QFrame()
+        # separator_line.setFrameShape(QtWidgets.QFrame.Shape.VLine)
+        # separator_line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        # self.infobar.addWidget(separator_line)
+
         self.infobar.addWidget(self.coords_toolbar)
         self.coords_toolbar.setVisible(self.app.defaults["global_coordsbar_show"])
 
@@ -2032,8 +2037,7 @@ class MainGUI(QtWidgets.QMainWindow):
         else:
             x_dec = str(self.app.dec_format(x, self.app.decimals)) if x else '0.0'
             y_dec = str(self.app.dec_format(y, self.app.decimals)) if y else '0.0'
-            self.position_label.setText("&nbsp;<b>X</b>: %s&nbsp;&nbsp;   "
-                                        "<b>Y</b>: %s&nbsp;" % (x_dec, y_dec))
+            self.position_label.setText("&nbsp;<b>X</b>: %s&nbsp;&nbsp;   <b>Y</b>: %s&nbsp;" % (x_dec, y_dec))
 
         # Set the Delta position label
         if dx is None or dy is None:
@@ -2042,8 +2046,7 @@ class MainGUI(QtWidgets.QMainWindow):
             dx_dec = str(self.app.dec_format(dx, self.app.decimals)) if dx else '0.0'
             dy_dec = str(self.app.dec_format(dy, self.app.decimals)) if dy else '0.0'
 
-            self.rel_position_label.setText("<b>Dx</b>: %s&nbsp;&nbsp;  <b>Dy</b>: "
-                                            "%s&nbsp;&nbsp;&nbsp;&nbsp;" % (dx_dec, dy_dec))
+            self.rel_position_label.setText("<b>Dx</b>: %s&nbsp;&nbsp;  <b>Dy</b>: %s&nbsp;" % (dx_dec, dy_dec))
 
     def on_tab_detached(self, tab_detached, tab_detached_name):
         if tab_detached_name == 'FlatCAM Plot Area':
