@@ -1,3 +1,12 @@
+# Informações sobre o Repositório
+Este repositório foi criado com a finalidade de facilitar a instalação do FlatCAM_beta no Windows 
+
+
+
+
+---
+# README Original .......
+
 FlatCAM Evo (c) 2019 - by Marius Stanciu
 
 Based on FlatCAM: 
