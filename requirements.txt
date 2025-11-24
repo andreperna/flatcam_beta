@@ -54,5 +54,5 @@ svgtrace
 # To detect OS dark mode
 darkdetect
 
-gdal @ https://github.com/cgohlke/geospatial-wheels/releases/download/v2024.9.22/GDAL-3.9.2-cp39-cp39-win_amd64.whl
+gdal @ https://github.com/cgohlke/geospatial-wheels/releases/download/v2025.10.25/gdal-3.11.4-cp311-cp311-win_amd64.whl
 rasterio

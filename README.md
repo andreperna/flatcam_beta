@@ -7,10 +7,9 @@ A instalação no Windows é um pouco dificultada devido ao não gerenciamento a
 
 
 ## Pontos principais deste repositório 
-- Versão do python utilizada: 3.9.13
-- Versão do GDAL utilizada: 3.9.2 (para python 3.9), disponível em https://github.com/cgohlke/geospatial-wheels/releases/download/v2024.9.22/GDAL-3.9.2-cp39-cp39-win_amd64.whl
-- Adicionada a dependência ao requirements: pywin32
-- Ajustada a versão do numpy no requirements: 1.16,<=1.26.4
+- Versão do python utilizada: 3.11.9
+- Versão do GDAL utilizada: 3.11.4 (para python 3.11), disponível em  @ https://github.com/cgohlke/geospatial-wheels/releases/download/v2025.10.25/gdal-3.11.4-cp311-cp311-win_amd64.whl
+
 
 
 
