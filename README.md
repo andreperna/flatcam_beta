@@ -1,6 +1,15 @@
 # Informações sobre o Repositório
-Este repositório foi criado com a finalidade de facilitar a instalação do FlatCAM_beta no Windows 
+Este repositório foi criado com a finalidade de facilitar a instalação do FlatCAM_beta no Windows
 
+É um fork de https://bitbucket.org/marius_stanciu/flatcam_beta, que por sua vez é um fork de https://bitbucket.org/jpcgt/flatcam
+
+A instalação no Windows é um pouco dificultada devido ao não gerenciamento automático das depencias pelo pip no Windows, principalmente o GDAL, que deve ter uma compilação binária especifica para a versão de python sendo utilizada.
+
+
+## Pontos principais deste repositório 
+- Versão do python utilizada: 3.9.13
+- Versão do GDAL utilizada: 3.9.2 (para python 3.9), disponível em https://github.com/cgohlke/geospatial-wheels/releases/download/v2024.9.22/GDAL-3.9.2-cp39-cp39-win_amd64.whl
+- 
 
 
 
